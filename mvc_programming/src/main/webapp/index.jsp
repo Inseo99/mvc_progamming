@@ -7,6 +7,7 @@
 
 String msg = "";
 
+
 if (session.getAttribute("msg") != null) {
 	msg = (String)session.getAttribute("msg");
 }
