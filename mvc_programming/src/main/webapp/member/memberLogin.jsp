@@ -1,7 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE HTML>
 <HTML>
  <HEAD>
-  <TITLE> ȸ���α��� </TITLE>
+  <TITLE> 회원 로그인 </TITLE>
   <style>
 header {
 	width:100%
@@ -35,25 +36,52 @@ footer {
 		}
 
 </style>
+<script>
+// 아이디, 비밀번호 유효성검사
+function check() {
+	// 이름으로 객체찾기
+	let memberid = document.getElementsByName("memberid");
+	let memberpwd = document.getElementsByName("memberpwd");
+	//alert(memberid[0].value);
+	
+	
+	if(memberid[0].value == "") {
+		alert("아이디를 입력해주세요");
+		memberid[0].focus();
+		return;
+	} else if(memberpwd[0].value == "") {
+		alert("비밀번호를 입력해주세요");
+		memberpwd[0].focus();
+		return;
+	}
+	
+	var fm = document.frm;
+	fm.action = "<%=request.getContextPath()%>/member/memberLoginAction.aws";	// 가상경로지정 action은 처리하는 의미
+	fm.method = "post";
+	fm.submit();
+	
+	return
+}
+</script>
  </HEAD>
  <BODY>
-<header>�α��� ������</header>
+<header>회원 로그인</header>
 <nav></nav>
 <section>
 	 <article>
-		<form name="frm" action=".test0920_result.html" method="post">
+		<form name="frm">
 			<table border=1 style="width:500px">
 				<tr>
-					<td>���̵�</td>
-					<td><input type="text"name="memberId"maxlength="30"style="width:150px"value=""placeholder="���̵� �Է��ϼ���"></td>
+					<td>아이디</td>
+					<td><input type="text" name="memberid" maxlength="20" style="width:150px" placeholder="아이디를 입력하세요"></td>
 				</tr>
 				<tr>
-					<td>��й�ȣ</td>
-					<td><input type="password"name="memberPwd"maxlength="30"style="width:150px"placeholder="��й�ȣ�� �Է��ϼ���"></td>
+					<td>비밀번호</td>
+					<td><input type="password" name="memberpwd" maxlength="20" style="width:150px" placeholder="비밀번호를 입력하세요"></td>
 				</tr>
 				<tr>
 					<td colspan=2 style="text-align:center">
-					<input type="button"name="btn"value="�α���">
+					<input type="button" name="btn" value="로그인" onclick = "check();">
 					</td>
 				</tr>
 			</table>

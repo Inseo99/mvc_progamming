@@ -83,13 +83,48 @@ public class MemberController extends HttpServlet {
 
 			String uri2 = "/member/memberJointeacher.jsp";
 			RequestDispatcher rd = request.getRequestDispatcher(uri2);
-			rd.forward(request, response);	// 포워드방식
+			rd.forward(request, response);	// 포워드방식 : 내부에서 넘겨서 토스하겠다는 뜻
 		} else if (location[2].equals("memberLogin.aws")) {
 
 			String uri2 = "/member/memberLogin.jsp";
 			RequestDispatcher rd = request.getRequestDispatcher(uri2);
-			rd.forward(request, response);	// 포워드방식
+			rd.forward(request, response);
+		} else if (location[2].equals("memberLoginAction.aws")) {
+			
+			String memberId = request.getParameter("memberid");
+			String memberPwd = request.getParameter("memberpwd");
+			
+			MemberDao md = new MemberDao();
+			MemberVo mv = md.memberLoginCheck(memberId, memberPwd);
+			// System.out.println("ggggg"+mv);
+			
+			if (mv == null) {
+				response.sendRedirect(request.getContextPath() + "/member/memberLogin.aws");	// 해당주소로 다시 가세요. 해당하는 값이 없을때				
+			} else {
+				// 해당되는 로그인 사용자가 있으면 세션에 회원정보 담아서 메인으로 가라
+				
+				String mid = mv.getMemberid();	// 아이디꺼내기
+				int midx = mv.getMidx();		// 회원번호꺼내기
+				String memberName = mv.getMembername();		// 이름꺼내기
+
+				HttpSession session = request.getSession();
+				session.setAttribute("mid", mid);
+				session.setAttribute("midx", midx);
+				session.setAttribute("memberName", memberName);
+				
+				response.sendRedirect(request.getContextPath() + "/");	// 로그인 되었으면 메인으로 가세요.
+			}			
+		}  else if (location[2].equals("memberLogout.aws")) {
+			System.out.println("로그아웃");
+			HttpSession session = request.getSession();
+			session.removeAttribute("mid");
+			session.removeAttribute("midx");
+			session.removeAttribute("memberName");
+			session.invalidate();
+			
+			response.sendRedirect(request.getContextPath() + "/");
 		}
+		
 		
 		
 	}

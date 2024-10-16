@@ -4,7 +4,8 @@
 <jsp:setProperty name="mv" property="*"/>
  
 <%
-	
+// 필요가 없어짐	
+
 String[] memberHobby = request.getParameterValues("memberHobby");
 String memberInHobby="";
 for(int i=0;i<memberHobby.length;i++){
