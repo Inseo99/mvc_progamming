@@ -14,7 +14,7 @@
   <!-- controller라는 이름으로 묶고 확장자 aws로 넘어오는 모든 주소는 MemberController로 넘긴다. -->
   <servlet>
   <servlet-name>controller</servlet-name>
-  <servlet-class>mvc.controller.MemberController</servlet-class>
+  <servlet-class>mvc.controller.FrontController</servlet-class>
   </servlet>
   <servlet-mapping>
   <servlet-name>controller</servlet-name>

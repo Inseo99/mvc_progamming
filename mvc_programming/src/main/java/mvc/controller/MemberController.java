@@ -17,6 +17,12 @@ import java.util.ArrayList;
 @WebServlet("/MemberController")
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private String location;	// 멤버변수(전역) 초기화 => 이동할 페이지
+	
+	public MemberController(String location) {
+		this.location = location;
+	}
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -26,14 +32,14 @@ public class MemberController extends HttpServlet {
 		// System.out.println("값이 넘어오나요?");
 		
 		// 전체주소를 추출
-		String uri = request.getRequestURI();
+		// String uri = request.getRequestURI();
 		// System.out.println("url: " + url);	// /mvc_programming/member/memberJoinAction.aws
 		
-		String[] location = uri.split("/");
+		// String[] location = uri.split("/");
 		String paramMethod = "";	// 전송방식이 sendRedirect면 S foward방식이면 F
 		String url = "";
 		
-		if (location[2].equals("memberJoinAction.aws")) {	// 4번째방의 값이 memberJoinAction.aws이면 
+		if (location.equals("memberJoinAction.aws")) {	// 4번째방의 값이 memberJoinAction.aws이면 
 			
 			String memberId = request.getParameter("memberid");
 			String memberPwd = request.getParameter("memberpwd");
@@ -84,7 +90,7 @@ public class MemberController extends HttpServlet {
 			
 			paramMethod = "S";	// 밑에서 sendRedirect방식으로 넘긴다.
 			
-		} else if (location[2].equals("memberJointeacher.aws")) {
+		} else if (location.equals("memberJointeacher.aws")) {
 
 			url = "/member/memberJointeacher.jsp";
 			/*
@@ -93,12 +99,12 @@ public class MemberController extends HttpServlet {
 			 */			
 			paramMethod = "F"; 	// 하단에서 foward방식으로 처리합니다.
 			
-		} else if (location[2].equals("memberLogin.aws")) {
+		} else if (location.equals("memberLogin.aws")) {
 
 			url = "/member/memberLogin.jsp";
 			paramMethod = "F";
 			
-		} else if (location[2].equals("memberLoginAction.aws")) {
+		} else if (location.equals("memberLoginAction.aws")) {
 			
 			String memberId = request.getParameter("memberid");
 			String memberPwd = request.getParameter("memberpwd");
@@ -127,7 +133,7 @@ public class MemberController extends HttpServlet {
 			
 			paramMethod = "S";
 			
-		}  else if (location[2].equals("memberLogout.aws")) {
+		}  else if (location.equals("memberLogout.aws")) {
 			// System.out.println("로그아웃");
 			HttpSession session = request.getSession();
 			session.removeAttribute("mid");
@@ -137,7 +143,7 @@ public class MemberController extends HttpServlet {
 			
 			url = request.getContextPath() + "/";
 			paramMethod = "S";
-		} else if (location[2].equals("memberList.aws")) {
+		} else if (location.equals("memberList.aws")) {
 			// System.out.println("memberList.aws");
 			
 			// 1. 메소드 불러서 처리하는 코드를 만들어야한다.
@@ -149,7 +155,7 @@ public class MemberController extends HttpServlet {
 			// 2. 보여줄 페이지를 foward방식으로 보여준다. 공유의 특성을 가지고 있다.
 			url = "/member/memberList.jsp";
 			paramMethod = "F";
-		} else if (location[2].equals("memberIdCheck.aws")) {
+		} else if (location.equals("memberIdCheck.aws")) {
 			// System.out.println("memberIdCheck.aws");
 			
 			String memberId = request.getParameter("memberId");
