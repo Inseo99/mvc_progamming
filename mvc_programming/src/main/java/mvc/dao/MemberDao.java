@@ -144,4 +144,34 @@ public class MemberDao {	// MVC방식으로 가기전에 첫번째 model1 방식
 		return alist;
 	}
 	
+	public int memberIdCheck(String memberId) {
+		String sql = "SELECT COUNT(*) AS cnt FROM member WHERE memberid = ?";
+		ResultSet rs = null;	// db에서 결과 데이터를 받아오는 전용클래스
+		int cnt = 0;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, memberId);
+			rs = pstmt.executeQuery();	
+			
+			if (rs.next()) {
+				cnt = rs.getInt("cnt");
+			}			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try{
+				rs.close();
+				pstmt.close();
+				conn.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return cnt;
+	}
+	
 }

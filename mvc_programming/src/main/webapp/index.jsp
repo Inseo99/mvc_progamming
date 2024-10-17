@@ -56,14 +56,16 @@ if (session.getAttribute("midx") != null) {
 <hr>
 <div class="main">환영합니다. 메인페이지입니다.</div>
 <div>
-<a href = "<%=request.getContextPath()%>/member/memberJointeacher.aws">회원가입페이지가기</a>
+<a href = "<%=request.getContextPath()%>/member/memberJointeacher.aws">회원가입 페이지가기</a>
 </div>
 <div>
-<a href = "<%=request.getContextPath()%>/member/memberLogin.aws">회원로그인하기</a>
+<a href = "<%=request.getContextPath()%>/member/memberLogin.aws">회원 로그인하기</a>
 </div>
 <div>
-<a href = "<%=request.getContextPath()%>/member/memberList.aws">회원목록가기</a>
+<a href = "<%=request.getContextPath()%>/member/memberList.aws">회원 목록 가기</a>
 </div>
-
+<div>
+<a href = "<%=request.getContextPath()%>/board/boardList.aws">게시판 목록 가기</a>
+</div>
 </body>
 </html>

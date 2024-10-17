@@ -11,6 +11,7 @@ import mvc.dao.MemberDao;
 import mvc.vo.MemberVo;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 @WebServlet("/MemberController")
@@ -148,14 +149,27 @@ public class MemberController extends HttpServlet {
 			// 2. 보여줄 페이지를 foward방식으로 보여준다. 공유의 특성을 가지고 있다.
 			url = "/member/memberList.jsp";
 			paramMethod = "F";
+		} else if (location[2].equals("memberIdCheck.aws")) {
+			// System.out.println("memberIdCheck.aws");
+			
+			String memberId = request.getParameter("memberId");
+			
+			MemberDao md = new MemberDao();
+			int cnt = md.memberIdCheck(memberId);
+			
+			// System.out.println(cnt);
+			
+			PrintWriter out = response.getWriter();
+			out.println("{\"cnt\" :\""+ cnt +"\"}");
 		}
 		
 		if (paramMethod.equals("F")) {
 			RequestDispatcher rd = request.getRequestDispatcher(url);
 			rd.forward(request, response);		
-		} else {
+		} else if (paramMethod.equals("S")) {
 			response.sendRedirect(url);
 		}
+			
 		
 		
 	}

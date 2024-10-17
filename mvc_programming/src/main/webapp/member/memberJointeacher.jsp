@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE> 회원가입 </TITLE>
-<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="https://code.jquery.com/jquery-latest.min.js"></script> <!-- jquery CDN주소 -->
 <link href="../css/style.css" type="text/css" rel="stylesheet">
 <script>
 //alert("ddddd");
@@ -24,6 +24,10 @@ function check(){
 		alert("아이디를 입력해주세요");
 		fm.memberid.focus();
 		return;
+	} else if (fm.btn.value == "N") {
+		alert("아이디중복체크를 해주세요");
+		fm.memberid.focus();
+		return;		
 	}else if (fm.memberpwd.value ==""){		
 		alert("비밀번호를 입력해주세요");
 		fm.memberpwd.focus();
@@ -107,7 +111,35 @@ function hobbyCheck(){
 $(document).ready(function() {
 	
 	$("#btn").click(function() {
-		alert("중복체크버튼 클릭")
+		// alert("중복체크버튼 클릭")
+		
+		let memberId = $("#memberid").val();
+		if (memberId == "") {
+			alert("아이디를 입력해주세요");
+			return;
+		}
+		
+		$.ajax({
+			type : "post",	// 전송방식
+			url : "<%=request.getContextPath()%>/member/memberIdCheck.aws",
+			dataType : "json",		// json 타입은 문서에서 {"키값" : "vlaue값" , "키값" : "value값2"}
+			data : {"memberId" : memberId},
+			success : function(result) {	// 결과가 넘어와서 성공했을 때 받는 영역
+				// alert("전송성공");
+				// alert("길이는? : " + result.length); 
+				// alert("cnt는? : " + result.cnt);
+				if(result.cnt == 0) {
+					alert("사용할 수 있는 아이디입니다.");
+					$("btn").val("Y");
+				} else {
+					alert("사용할수 없는 아이디입니다.");
+				}
+			},
+			error : function() {		// 결과가 실패했을 때 받는 영역
+				// alert("전송실패");
+				$("#memberid").val("");	// 입력한 아이디 지우기
+			}			
+		});
 		
 	});
 });
@@ -116,7 +148,6 @@ $(document).ready(function() {
 
 </script>
 </HEAD>
-
  <BODY>
 <header>
 <h3>회원가입 페이지</h3>
@@ -132,8 +163,8 @@ $(document).ready(function() {
 			<tr>
 				<th class="idcolor">아이디</th>
 				<td>
-				<input type="text" name="memberid" maxlength="30" style="width:200px;" value="" placeholder="아이디를 입력하세요">
-				<button id = "btn">아이디 중복체크</button>
+				<input type="text" id = "memberid" name="memberid" maxlength="30" style="width:200px;" value="" placeholder="아이디를 입력하세요">
+				<button type="button" name = "btn" id = "btn" value = "N">아이디 중복체크</button>
 				</td>
 			</tr>
 			<tr>
