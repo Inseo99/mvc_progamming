@@ -11,6 +11,7 @@ import mvc.dao.MemberDao;
 import mvc.vo.MemberVo;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @WebServlet("/MemberController")
 public class MemberController extends HttpServlet {
@@ -28,6 +29,8 @@ public class MemberController extends HttpServlet {
 		// System.out.println("url: " + url);	// /mvc_programming/member/memberJoinAction.aws
 		
 		String[] location = uri.split("/");
+		String paramMethod = "";	// 전송방식이 sendRedirect면 S foward방식이면 F
+		String url = "";
 		
 		if (location[2].equals("memberJoinAction.aws")) {	// 4번째방의 값이 memberJoinAction.aws이면 
 			
@@ -69,26 +72,31 @@ public class MemberController extends HttpServlet {
 				
 				session.setAttribute("msg", msg);
 				
-				pageUrl = request.getContextPath() + "/";	//request.getContextPath() : 프로젝트 이름
-				response.sendRedirect(pageUrl);		// 전송방식 sendRedirect는 요청받으면 다시 그쪽으로 가라고 지시하는 방법
+				url = request.getContextPath() + "/";	//request.getContextPath() : 프로젝트 이름
+				// response.sendRedirect(pageUrl);		// 전송방식 sendRedirect는 요청받으면 다시 그쪽으로 가라고 지시하는 방법
 			} else {
 				msg = "회원가입 오류발생하였습니다.";
 				
 				session.setAttribute("msg", msg);
-				pageUrl = request.getContextPath() + "/member/memberJointeacher.jsp";
-				response.sendRedirect(pageUrl);
+				url = request.getContextPath() + "/member/memberJointeacher.jsp";
 			}
+			
+			paramMethod = "S";	// 밑에서 sendRedirect방식으로 넘긴다.
 			
 		} else if (location[2].equals("memberJointeacher.aws")) {
 
-			String uri2 = "/member/memberJointeacher.jsp";
-			RequestDispatcher rd = request.getRequestDispatcher(uri2);
-			rd.forward(request, response);	// 포워드방식 : 내부에서 넘겨서 토스하겠다는 뜻
+			url = "/member/memberJointeacher.jsp";
+			/*
+			 * RequestDispatcher rd = request.getRequestDispatcher(uri2);
+			 * rd.forward(request, response); // 포워드방식 : 내부에서 넘겨서 토스하겠다는 뜻
+			 */			
+			paramMethod = "F"; 	// 하단에서 foward방식으로 처리합니다.
+			
 		} else if (location[2].equals("memberLogin.aws")) {
 
-			String uri2 = "/member/memberLogin.jsp";
-			RequestDispatcher rd = request.getRequestDispatcher(uri2);
-			rd.forward(request, response);
+			url = "/member/memberLogin.jsp";
+			paramMethod = "F";
+			
 		} else if (location[2].equals("memberLoginAction.aws")) {
 			
 			String memberId = request.getParameter("memberid");
@@ -99,7 +107,8 @@ public class MemberController extends HttpServlet {
 			// System.out.println("ggggg"+mv);
 			
 			if (mv == null) {
-				response.sendRedirect(request.getContextPath() + "/member/memberLogin.aws");	// 해당주소로 다시 가세요. 해당하는 값이 없을때				
+				url = request.getContextPath() + "/member/memberLogin.aws";	// 해당주소로 다시 가세요. 해당하는 값이 없을때			
+				paramMethod = "S";
 			} else {
 				// 해당되는 로그인 사용자가 있으면 세션에 회원정보 담아서 메인으로 가라
 				
@@ -112,19 +121,41 @@ public class MemberController extends HttpServlet {
 				session.setAttribute("midx", midx);
 				session.setAttribute("memberName", memberName);
 				
-				response.sendRedirect(request.getContextPath() + "/");	// 로그인 되었으면 메인으로 가세요.
-			}			
+				url = request.getContextPath() + "/";	// 로그인 되었으면 메인으로 가세요.
+			}
+			
+			paramMethod = "S";
+			
 		}  else if (location[2].equals("memberLogout.aws")) {
-			System.out.println("로그아웃");
+			// System.out.println("로그아웃");
 			HttpSession session = request.getSession();
 			session.removeAttribute("mid");
 			session.removeAttribute("midx");
 			session.removeAttribute("memberName");
 			session.invalidate();
 			
-			response.sendRedirect(request.getContextPath() + "/");
+			url = request.getContextPath() + "/";
+			paramMethod = "S";
+		} else if (location[2].equals("memberList.aws")) {
+			// System.out.println("memberList.aws");
+			
+			// 1. 메소드 불러서 처리하는 코드를 만들어야한다.
+			MemberDao md = new MemberDao();	// 객체생성
+			ArrayList<MemberVo> alist = md.memberSelectAll();
+			
+			request.setAttribute("alist", alist);
+			
+			// 2. 보여줄 페이지를 foward방식으로 보여준다. 공유의 특성을 가지고 있다.
+			url = "/member/memberList.jsp";
+			paramMethod = "F";
 		}
 		
+		if (paramMethod.equals("F")) {
+			RequestDispatcher rd = request.getRequestDispatcher(url);
+			rd.forward(request, response);		
+		} else {
+			response.sendRedirect(url);
+		}
 		
 		
 	}

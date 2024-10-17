@@ -29,7 +29,7 @@ if (session.getAttribute("midx") != null) {
 	logMsg = "<a href = '"+ request.getContextPath() +"/member/memberLogout.aws'>로그아웃</a>";
 } else {
 	alt = "로그인하세요";
-	logMsg = "로그아웃";
+	logMsg = "로그인";
 }
 
 %>
@@ -60,6 +60,9 @@ if (session.getAttribute("midx") != null) {
 </div>
 <div>
 <a href = "<%=request.getContextPath()%>/member/memberLogin.aws">회원로그인하기</a>
+</div>
+<div>
+<a href = "<%=request.getContextPath()%>/member/memberList.aws">회원목록가기</a>
 </div>
 
 </body>

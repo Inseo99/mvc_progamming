@@ -1,5 +1,14 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.*"%>
+<%@page import="mvc.vo.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+// Arraylist객체를 화면까지 가져왔다.
+ArrayList<MemberVo> alist = (ArrayList<MemberVo>)request.getAttribute("alist");
+
+// System.out.println(alist.get(0).getMemberid());
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,31 +65,33 @@ tbody tr:hover{
 		</tr>
 	</thead>
 	<tbody>
+<%-- 	  <% for(int i = 0; i < alist.size(); i++) { %>
 		<tr>
-			<td>3</td>
-			<td>test</td>
-			<td>홍갑수</td>
-			<td>남자</td>
-			<td>202-09-26</td>
+			<td><%=alist.get(i).getMidx() %></td>
+			<td><%=alist.get(i).getMemberid() %></td>
+			<td><%=alist.get(i).getMembername() %></td>
+			<td><%=alist.get(i).getMembergender() %></td>
+			<td><%=alist.get(i).getWriteday() %></td>
 		</tr>
+	  <% }%> --%>
+	   <% 
+	   int num = 1;
+	   for(MemberVo mv : alist) { %>
 		<tr>
-			<td>4</td>
-			<td>test2</td>
-			<td>한가영</td>
-			<td>여자</td>
-			<td>202-09-26</td>
+			<td><%=mv.getMidx() %></td>
+			<td><%=mv.getMemberid() %></td>
+			<td><%=mv.getMembername() %></td>
+			<td><%=mv.getMembergender() %></td>
+			<td><%=mv.getWriteday().substring(0, 10) %></td>
 		</tr>
-		<tr>
-			<td>5</td>
-			<td>test3</td>
-			<td>김갑수</td>
-			<td>남자</td>
-			<td>202-09-26</td>
-		</tr>
+	  <% 
+	  num++;
+	   }%>
+		
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan = "5">총 3명입니다.</td>
+			<td colspan = "5">총 <%=num %>명 입니다.</td>
 		</tr>
 	</tfoot>
 </table>

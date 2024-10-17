@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import mvc.dbcon.Dbconn;
 import mvc.vo.MemberVo;
@@ -74,11 +75,13 @@ public class MemberDao {	// MVC방식으로 가기전에 첫번째 model1 방식
 				String memberid = rs.getString("memberid");	// 결과값에서 아이디값을 뽑는다
 				int midx = rs.getInt("midx");				// 결과갑에서 회원번호를 뽑는다
 				String membername = rs.getString("membername");
+				String membergender = rs.getString("membergender");
 				
 				mv = new MemberVo();	// 화면에 가지고 갈 데이터를 담을 vo객체생성
 				mv.setMemberid(memberid);	// 옮겨담는다.
 				mv.setMidx(midx);
-				mv.setMembername(membername);				
+				mv.setMembername(membername);	
+				mv.setMembergender(membergender);
 			}
 			
 			
@@ -87,6 +90,7 @@ public class MemberDao {	// MVC방식으로 가기전에 첫번째 model1 방식
 			e.printStackTrace();
 		} finally {
 			try{
+				rs.close();
 				pstmt.close();
 				conn.close();
 			} catch(Exception e) {
@@ -96,6 +100,48 @@ public class MemberDao {	// MVC방식으로 가기전에 첫번째 model1 방식
 		
 		
 		return mv;
+	}
+	
+	public ArrayList<MemberVo> memberSelectAll() {
+		
+		ArrayList<MemberVo> alist = new ArrayList<MemberVo>();
+		String sql = "SELECT * FROM member WHERE delyn = 'N' ORDER BY midx DESC";
+		ResultSet rs = null;	// db값을 가져오기위한 전용클래스
+		MemberVo mv = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery(sql);
+			
+			while(rs.next()) {	// 커서가 다음으로 이동해서 첫 글이 있느냐 물어보고 true면 진행
+				int midx = rs.getInt("midx");
+				String memberId = rs.getString("memberid");
+				String memberName = rs.getString("membername");
+				String writeday = rs.getString("writeday");
+				
+				mv = new MemberVo();	// 첫행부터 mv에 옮겨담기
+				mv.setMidx(midx);
+				mv.setMemberid(memberId);
+				mv.setMembername(memberName);
+				mv.setWriteday(writeday);
+				
+				alist.add(mv);		// ArrayList객체에 하나씩 추가한다.
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try{
+				
+				pstmt.close();
+				conn.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}	
+		
+		return alist;
 	}
 	
 }

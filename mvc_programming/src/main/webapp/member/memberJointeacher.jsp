@@ -3,6 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE> 회원가입 </TITLE>
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <link href="../css/style.css" type="text/css" rel="stylesheet">
 <script>
 //alert("ddddd");
@@ -103,6 +104,14 @@ function hobbyCheck(){
 	return flag;
 }
 
+$(document).ready(function() {
+	
+	$("#btn").click(function() {
+		alert("중복체크버튼 클릭")
+		
+	});
+});
+
 
 
 </script>
@@ -124,6 +133,7 @@ function hobbyCheck(){
 				<th class="idcolor">아이디</th>
 				<td>
 				<input type="text" name="memberid" maxlength="30" style="width:200px;" value="" placeholder="아이디를 입력하세요">
+				<button id = "btn">아이디 중복체크</button>
 				</td>
 			</tr>
 			<tr>
