@@ -69,7 +69,6 @@ public class MemberController extends HttpServlet {
 					memberEmail, 
 					memberInHobby);
 
-			String pageUrl = "";
 			String msg = "";
 			
 			HttpSession session = request.getSession();	// 세션객체 활용

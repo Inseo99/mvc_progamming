@@ -17,7 +17,14 @@ public class BoardVo {
 	private String ip;
 	private int midx;
 	private String modifyday;
+	private String password;
 	
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
 	public int getBidx() {
 		return bidx;
 	}

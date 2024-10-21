@@ -43,7 +43,7 @@ PageMaker pm = (PageMaker)request.getAttribute("pm");
 	   for(BoardVo bv : alist) { %>
 		<tr>
 			<td><%=bv.getOriginbidx() %></td>
-			<td class="title"><a href="./detail.html"><%=bv.getSubject()%></a></td>
+			<td class="title"><a href="<%=request.getContextPath()%>/board/boardDetail.jsp"><%=bv.getSubject()%></a></td>
 			<td><%=bv.getWriter() %></td>
 			<td><%=bv.getViewcnt() %></td>
 			<td><%=bv.getWriteday().substring(0, 10) %></td>

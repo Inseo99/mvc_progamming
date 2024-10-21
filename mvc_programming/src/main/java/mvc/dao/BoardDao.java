@@ -101,6 +101,57 @@ public class BoardDao {
 		return value;
 	}
 	
+	public int boardInsert(BoardVo bv) {
+		
+		int value = 0;
+		
+		String subject = bv.getSubject();
+		String contents = bv.getContents();
+		String writer = bv.getWriter();
+		String password = bv.getPassword();
+		int midx = bv.getMidx();
+		
+		String sql = "INSERT INTO board(originbidx, depth, level_, subject, contents, writer, password, midx) VALUE(null, 0, 0, ?, ?, ?, ?, ?)";
+		String sql2 = "UPDATE board SET originbidx =(SELECT A.maxbidx FROM (SELECT max(bidx) AS maxbidx FROM board) A) WHERE bidx= (SELECT A.maxbidx FROM (SELECT max(bidx) AS maxbidx FROM board) A)";
+
+		
+		try {
+			conn.setAutoCommit(false);	// 수동커밋으로 하겠다.
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, subject);
+			pstmt.setString(2, contents);
+			pstmt.setString(3, writer);
+			pstmt.setString(4, password);
+			pstmt.setInt(5, midx);
+			
+			int exec = pstmt.executeUpdate();	// 실행되면 1 안되면 0
+			
+			pstmt = conn.prepareStatement(sql2);
+			int exec2 = pstmt.executeUpdate();	// 실행되면 1 안되면 0
+			
+			conn.commit();	// 일괄처리 커밋
+			
+			value = exec + exec2;
+			
+		} catch (SQLException e) {			
+			try {
+				conn.rollback();	// 실행중 오류발생시 롤백처리
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}			
+			e.printStackTrace();
+		}  finally {
+			try{	// 각 개체도 소멸시키고 DB연결을 끊는다.
+				// rs.close();
+				pstmt.close();
+				conn.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}		
+		}
+		return value;	// 성공하면 리턴값 2
+	}
+	
 }
 
 

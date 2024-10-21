@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import mvc.dao.BoardDao;
 import mvc.vo.BoardVo;
 import mvc.vo.Criteria;
@@ -59,16 +60,52 @@ public class BoardController extends HttpServlet {
 			
 			// System.out.println(alist);
 			
-			url = request.getContextPath() + "/board/boardList.jsp";	// 실제 내부 경로
 			paramMethod = "F";
+			url = "/board/boardList.jsp";	// 실제 내부 경로
 
 		} else if (location.equals("boardWrite.aws")) {	// 가상 경로
-			 System.out.println("boardList.aws");
-
+			// System.out.println("boardWrite.aws");
 			
-			url = request.getContextPath() + "/board/boardWrite.jsp";	// 실제 내부 경로
-			paramMethod = "F";
+			paramMethod = "F";	// 포워드 방식은 내부에서 내부에서 공유하는 것이기때문에 내부에서 활동하고 이동한다.
+			url = "/board/boardWrite.jsp";	// 실제 내부 경로
 
+		} else if (location.equals("boardWriteAction.aws")) {	// 가상 경로
+			//System.out.println("boardWriteAction.aws");
+			
+			// 1. 파라미터 값을 넘겨받는다.
+			String subject = request.getParameter("subject");
+			String contents = request.getParameter("contents");
+			String writer = request.getParameter("writer");
+			String password = request.getParameter("password");
+			
+			HttpSession session = request.getSession();	// 세션 객체를 불러와서
+			int midx = Integer.parseInt(session.getAttribute("midx").toString());	// 로그인할때 담았던 세션변수 midx값을 꺼낸다.
+			
+			BoardVo bv = new BoardVo();
+			bv.setSubject(subject);
+			bv.setContents(contents);
+			bv.setWriter(writer);
+			bv.setPassword(password);
+			bv.setMidx(midx);
+			
+			// 2. DB처리한다.
+			BoardDao bd = new BoardDao();
+			
+			int value = bd.boardInsert(bv);
+			
+			if(value == 2) {	// 입력성공
+				
+				paramMethod = "S";
+				url = request.getContextPath() + "/board/boardList.aws";	
+				
+				
+			} else {	// 입력실패
+				paramMethod = "S";
+				url = request.getContextPath() + "/board/boardWrite.aws";	
+			}
+			
+			// 3. 처리 후 이동한다. sendRedirect
+			
 		}
 		
 		
