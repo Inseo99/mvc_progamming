@@ -1,5 +1,8 @@
+<%@page import="mvc.vo.BoardVo"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%BoardVo bv = (BoardVo)request.getAttribute("bv"); // 강제형변환 양쪽형을 맞춰준다
+%>	
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,18 +41,18 @@ function check() {
 </header>
 
 <article class="detailContents">
-	<h2 class="contentTitle">장애학생들을 위한 특별한 피아노 (조회수:7)</h2>
-	<p class="write">관리자 (2024-10-12)</p>
+	<h2 class="contentTitle"><%=bv.getSubject() %> (조회수:<%=bv.getViewcnt() %>)</h2>
+	<p class="write"><%=bv.getWriter()%> (<%=bv.getWriteday() %>)</p>
 	<div class="content">
-		link: http://www.naver.com
-		<br>
-		네이버 홈페이지 입니다.
+		<%=bv.getContents() %>
 	</div>
-	<a href="#" class="fileDown"><img src="https://cdn.pixabay.com/photo/2024/03/12/09/28/ai-generated-8628373_1280.png" width="30px" height="20px">첨부파일입니다.</a>
+	<% if (bv.getFilename() != null) { %>
+	<a href="#" class="fileDown"><img src="<%=bv.getFilename() %>">첨부파일입니다.</a>
+	<%} %>
 </article>
 	
 <div class="btnBox">
-	<a class="btn aBtn" href="./update.html">수정</a>
+	<a class="btn aBtn" href="<%=request.getContextPath()%>/board/boardModify.aws?bidx=<%=bv.getBidx()%>">수정</a>
 	<a class="btn aBtn" href="./delete.html">삭제</a>
 	<a class="btn aBtn" href="./comment.html">답변</a>
 	<a class="btn aBtn" href="./list.html">목록</a>

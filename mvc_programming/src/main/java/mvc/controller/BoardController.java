@@ -93,23 +93,81 @@ public class BoardController extends HttpServlet {
 			
 			int value = bd.boardInsert(bv);
 			
-			if(value == 2) {	// 입력성공
-				
+			// 3. 처리 후 이동한다. sendRedirect			
+			if(value == 2) {	// 입력성공				
 				paramMethod = "S";
-				url = request.getContextPath() + "/board/boardList.aws";	
-				
-				
+				url = request.getContextPath() + "/board/boardList.aws";					
 			} else {	// 입력실패
 				paramMethod = "S";
 				url = request.getContextPath() + "/board/boardWrite.aws";	
-			}
+			}			
+		} else if (location.equals("boardContents.aws")) {
+			// System.out.println("boardContents.aws");
+			// 1. 넘어온 값 받기
+			String bidx = request.getParameter("bidx");
+			// System.out.println("bidx:" + bidx);
+			int bidxInt = Integer.parseInt(bidx);
 			
-			// 3. 처리 후 이동한다. sendRedirect
+			// 2. 처리하기
+			BoardDao bd = new BoardDao();
+			BoardVo bv = bd.boardSelectOne(bidxInt);
 			
-		}
+			request.setAttribute("bv", bv);	// 포워드 방식이라 같은 영역안에 있어서 공유해서 jsp페이지에서 꺼내쓸 수 있다.
+			
+			// 3. 이동해서 화면 보여주기
+			paramMethod = "F";
+			url = "/board/boardContents.jsp";			
+		} else if (location.equals("boardModify.aws")) {
+			// System.out.println("boardModify.aws");
+			
+			String bidx = request.getParameter("bidx");
+			BoardDao bd = new BoardDao();
+			BoardVo bv = bd.boardSelectOne(Integer.parseInt(bidx));
+			request.setAttribute("bv", bv);
+			
+			paramMethod = "F";
+			url = "/board/boardModify.jsp";
 		
-		
+		} else if (location.equals("boardModifyAction.aws")) {
+			//System.out.println("boardModifyAction.aws");
+			
+			String subject = request.getParameter("subject");
+			String contents = request.getParameter("contents");
+			String writer = request.getParameter("writer");
+			String password = request.getParameter("password");
+			String bidx = request.getParameter("bidx");
+
+			BoardDao bd = new BoardDao();
+			int bidxInt = Integer.parseInt(bidx);
+			BoardVo bv = bd.boardSelectOne(bidxInt);
+			
+			// 비밀번호 체크
+			if (password.equals(bv.getPassword())) {	// 비밀번호 같으면
 				
+				BoardDao bd2 = new BoardDao();
+				BoardVo bvnew = new BoardVo();
+
+				bvnew.setSubject(subject);
+				bvnew.setContents(contents);
+				bvnew.setWriter(writer);
+				bvnew.setPassword(password);
+				bvnew.setBidx(bidxInt);
+				
+				int value = bd2.boardUpdate(bvnew); 
+				
+				if(value == 1) {	// 입력성공				
+					paramMethod = "S";
+					url = request.getContextPath() + "/board/boardContents.aws?bidx=" + bidx;					
+				} else {	// 입력실패
+					paramMethod = "S";
+					url = request.getContextPath() + "/board/boardModify.aws?bidx=" + bidx;	
+				}
+			} else {	// 비밀번호 다르면				
+				paramMethod = "S";
+				url = request.getContextPath() + "/board/boardModify.aws?bidx=" + bidx;
+			}
+
+		}
 		
 		if (paramMethod.equals("F")) {
 			RequestDispatcher rd = request.getRequestDispatcher(url);
