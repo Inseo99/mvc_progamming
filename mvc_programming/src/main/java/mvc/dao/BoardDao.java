@@ -1,5 +1,6 @@
 package mvc.dao;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,6 +44,7 @@ public class BoardDao {
 				String subject = rs.getString("subject");
 				String writer = rs.getString("writer");
 				int viewCnt = rs.getInt("viewcnt");
+				int recom = rs.getInt("recom");
 				String writeday = rs.getString("writeday");
 				
 				BoardVo bv = new BoardVo();	// 첫행부터 bv에 옮겨담기
@@ -51,6 +53,7 @@ public class BoardDao {
 				bv.setSubject(subject);
 				bv.setWriter(writer);
 				bv.setViewcnt(viewCnt);
+				bv.setRecom(recom);
 				bv.setWriteday(writeday);
 				
 				alist.add(bv);		// ArrayList객체에 하나씩 추가한다.
@@ -243,7 +246,7 @@ public class BoardDao {
 		return value;
 	}
 	
-	public int boaedViewCntUpdate(int bidx) {
+	public int boardViewCntUpdate(int bidx) {
 		
 		int value = 0;
 		
@@ -266,6 +269,41 @@ public class BoardDao {
 		}
 		
 		return value;
+	}
+	
+public int boardRecomUpdate(int bidx) {
+		
+		int value = 0;
+		int recom = 0;
+		
+		String sql = "UPDATE board SET recom = recom + 1 WHERE bidx = ?";
+		String sql2 = "SELECT recom FROM board WHERE bidx = ?";
+		ResultSet rs = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bidx);
+			value = pstmt.executeUpdate();
+			
+			pstmt = conn.prepareStatement(sql2);
+			pstmt.setInt(1, bidx);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				recom = rs.getInt("recom");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try{	// 각 개체도 소멸시키고 DB연결을 끊는다.
+				pstmt.close();
+				conn.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}		
+		}
+		
+		return recom;
 	}
 	
 }

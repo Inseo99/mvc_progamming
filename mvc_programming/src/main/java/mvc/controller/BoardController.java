@@ -110,7 +110,7 @@ public class BoardController extends HttpServlet {
 			
 			// 2. 처리하기
 			BoardDao bd = new BoardDao();	// 객체생성
-			int value = bd.boaedViewCntUpdate(bidxInt);
+			int value = bd.boardViewCntUpdate(bidxInt);
 			
 			BoardVo bv = bd.boardSelectOne(bidxInt);	// 생성한 메소드 호출 (해당되는 bidx의 게시물 데이터 가져옴)
 			request.setAttribute("bv", bv);	// 포워드 방식이라 같은 영역안에 있어서 공유해서 jsp페이지에서 꺼내쓸 수 있다.
@@ -173,6 +173,19 @@ public class BoardController extends HttpServlet {
 	            out.flush();
 			}
 
+		} else if (location.equals("boardRecom.aws")) {
+			
+			String bidx = request.getParameter("bidx");
+			int bidxInt = Integer.parseInt(bidx);
+			
+			BoardDao bd = new BoardDao();	// 객체생성
+			int recom = bd.boardRecomUpdate(bidxInt);
+			
+			PrintWriter out = response.getWriter();
+			out.println("{\"recom\" :\""+ recom +"\"}");
+						
+			// paramMethod = "S";
+			// url = request.getContextPath() + "/board/boardContents.aws?bidx=" + bidx;
 		}
 		
 		if (paramMethod.equals("F")) {
