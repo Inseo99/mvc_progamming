@@ -13,6 +13,7 @@ import mvc.vo.Criteria;
 import mvc.vo.PageMaker;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -93,12 +94,11 @@ public class BoardController extends HttpServlet {
 			
 			int value = bd.boardInsert(bv);
 			
+			paramMethod = "S";
 			// 3. 처리 후 이동한다. sendRedirect			
 			if(value == 2) {	// 입력성공				
-				paramMethod = "S";
 				url = request.getContextPath() + "/board/boardList.aws";					
 			} else {	// 입력실패
-				paramMethod = "S";
 				url = request.getContextPath() + "/board/boardWrite.aws";	
 			}			
 		} else if (location.equals("boardContents.aws")) {
@@ -109,11 +109,12 @@ public class BoardController extends HttpServlet {
 			int bidxInt = Integer.parseInt(bidx);
 			
 			// 2. 처리하기
-			BoardDao bd = new BoardDao();
-			BoardVo bv = bd.boardSelectOne(bidxInt);
+			BoardDao bd = new BoardDao();	// 객체생성
+			int value = bd.boaedViewCntUpdate(bidxInt);
 			
+			BoardVo bv = bd.boardSelectOne(bidxInt);	// 생성한 메소드 호출 (해당되는 bidx의 게시물 데이터 가져옴)
 			request.setAttribute("bv", bv);	// 포워드 방식이라 같은 영역안에 있어서 공유해서 jsp페이지에서 꺼내쓸 수 있다.
-			
+						
 			// 3. 이동해서 화면 보여주기
 			paramMethod = "F";
 			url = "/board/boardContents.jsp";			
@@ -141,6 +142,7 @@ public class BoardController extends HttpServlet {
 			int bidxInt = Integer.parseInt(bidx);
 			BoardVo bv = bd.boardSelectOne(bidxInt);
 			
+			paramMethod = "S";
 			// 비밀번호 체크
 			if (password.equals(bv.getPassword())) {	// 비밀번호 같으면
 				
@@ -156,15 +158,19 @@ public class BoardController extends HttpServlet {
 				int value = bd2.boardUpdate(bvnew); 
 				
 				if(value == 1) {	// 입력성공				
-					paramMethod = "S";
 					url = request.getContextPath() + "/board/boardContents.aws?bidx=" + bidx;					
 				} else {	// 입력실패
-					paramMethod = "S";
 					url = request.getContextPath() + "/board/boardModify.aws?bidx=" + bidx;	
 				}
 			} else {	// 비밀번호 다르면				
-				paramMethod = "S";
-				url = request.getContextPath() + "/board/boardModify.aws?bidx=" + bidx;
+				response.setContentType("text/html; charset=UTF-8");  // 응답 콘텐츠 타입 설정
+	            PrintWriter out = response.getWriter();  // PrintWriter 객체 가져오기
+	            
+	            out.println("<script>");
+	            out.println("alert('비밀번호가 다릅니다.');");
+	            out.println("location.href='" + request.getContextPath() + "/board/boardModify.aws?bidx=" + bidx + "';");
+	            out.println("</script>");
+	            out.flush();
 			}
 
 		}

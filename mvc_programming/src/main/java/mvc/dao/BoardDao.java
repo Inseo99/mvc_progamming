@@ -243,6 +243,31 @@ public class BoardDao {
 		return value;
 	}
 	
+	public int boaedViewCntUpdate(int bidx) {
+		
+		int value = 0;
+		
+		String sql = "UPDATE board SET viewcnt = viewcnt+1 WHERE bidx = ?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bidx);
+			
+			value = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try{	// 각 개체도 소멸시키고 DB연결을 끊는다.
+				pstmt.close();
+				// conn.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}		
+		}
+		
+		return value;
+	}
+	
 }
 
 
